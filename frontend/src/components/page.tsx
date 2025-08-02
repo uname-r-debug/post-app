@@ -50,10 +50,10 @@ function match(view: string | undefined) {
       markup = <Create />;
       break;
     case "Delete":
-      markup = <DeleteComponent />
+      markup = <DeleteComponent />;
       break;
-    default://case "Update": {...}
-      markup = <Update />
+    default: //case "Update": {...}
+      markup = <Update />;
   }
   return markup;
 }

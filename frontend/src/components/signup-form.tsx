@@ -68,7 +68,6 @@ export default function SignupForm() {
 
           <CardContent>
             <form className="flex flex-col gap-6" onSubmit={handleSignup}>
-
               <div className="grid gap-3">
                 <Label htmlFor="name">Name</Label>
                 <Input id="name" type="text" placeholder="..." required />
@@ -111,7 +110,6 @@ export default function SignupForm() {
                   Log in
                 </Button>
               </div>
-
             </form>
           </CardContent>
         </Card>
