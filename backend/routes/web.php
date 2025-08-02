@@ -3,15 +3,54 @@
 use App\Http\Controllers\UserModelController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Route;
-Route::post('/api/create', [UserModelController::class, 'create'])->withoutMiddleware(
-    VerifyCsrfToken::class
-);
-Route::post('/api/delete', [UserModelController::class, 'delete'])->withoutMiddleware(
-    VerifyCsrfToken::class
-);
-Route::post('/api/read', [UserModelController::class, 'read'])->withoutMiddleware(
-    VerifyCsrfToken::class
-);
-Route::post('/api/index', [UserModelController::class, 'index'])->withoutMiddleware(VerifyCsrfToken::class);
-Route::post('/api/create.post', [UserModelController::class, 'createPost'])->withoutMiddleware(VerifyCsrfToken::class);
-Route::post('/api/delete.post', [UserModelController::class, 'deletePost'])->withoutMiddleware(VerifyCsrfToken::class);
+
+[$userController, $middleware] = [UserModelController::class, VerifyCsrfToken::class];
+
+Route::post(
+    uri: '/api/create',
+    action: [$userController, 'create']
+)
+    ->withoutMiddleware(
+        $middleware
+    );
+
+Route::post(
+    uri: '/api/delete',
+    action: [$userController, 'delete']
+)
+    ->withoutMiddleware(
+        $middleware
+    );
+
+Route::post(
+    uri: '/api/read',
+    action: [$userController, 'read']
+)
+    ->withoutMiddleware(
+        $middleware
+    );
+
+Route::post(
+    uri: '/api/index',
+    action: [$userController, 'index']
+)
+    ->withoutMiddleware(
+        $middleware
+    );
+
+Route::post(
+    uri: '/api/create.post',
+    action: [$userController, 'createPost']
+)
+    ->withoutMiddleware(
+        $middleware
+    );
+
+Route::post(
+    uri: '/api/delete.post',
+    action:
+    [$userController, 'deletePost']
+)
+    ->withoutMiddleware(
+        $middleware
+    );
