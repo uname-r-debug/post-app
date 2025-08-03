@@ -40,7 +40,7 @@ class UserModelController extends Controller
             status: 200
         ) : response(status: 404);
     }
-    public function deletePost(Request $request)
+    public function deletePost(Request $request): Response
     {
         $response = new Response(status: 404);
         $ok = PostModel::where(
@@ -56,7 +56,7 @@ class UserModelController extends Controller
                 ->setContent(true);
         return $response;
     }
-    public function delete(Request $request)
+    public function delete(Request $request): Response
     {
         $response = new Response(status: 404);
         [$user, $sessionKey] = [
@@ -80,7 +80,7 @@ class UserModelController extends Controller
                 ->setContent(true);
         return $response;
     }
-    public function read(Request $request)
+    public function read(Request $request): Response
     {
         $response = new Response(status: 404);
         [$sessionKey, $email, $password] = [
@@ -103,7 +103,7 @@ class UserModelController extends Controller
                 ]));
         return $response;
     }
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $response = new Response(status: 404);
         $user = $request->input('user');
@@ -117,9 +117,11 @@ class UserModelController extends Controller
                 ->setStatusCode(200);
         return $response;
     }
-    public function update(Request $request)
+    public function update(Request $request): Response
     {
+        $response = new Response(status: 400);
         $subject = $request->input('subject');
         $content = $request->input('content');
+        return $response;
     }
 }
