@@ -1,41 +1,36 @@
 import { GalleryVerticalEnd } from "lucide-react";
 
-import { cn, post } from "@/lib/utils";
+import { cn, DEFAULT_POST_HEADERS, formInputs, post } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useNavigate } from "react-router";
+import { useNavigate, type NavigateFunction } from "react-router";
+type PostData = {
+  sessionKey: string;
+  email: string;
+  password: string;
+};
 export function LoginForm({
   className,
   ...props
-}: React.ComponentProps<"div">) {
-  const Navigate = useNavigate();
+}: React.ComponentProps<"div">): React.JSX.Element {
+  const Navigate: NavigateFunction = useNavigate();
 
-  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    const [email, pw] = ["email", "password"].map(
-      (id) => document.querySelector<HTMLInputElement>("#" + id)?.value,
-    );
-    post(
+    const [_email, _pw]: Array<string> = formInputs(["email", "password"]);
+    post<PostData, { user: number }>(
       "http://localhost:8000/api/read",
       {
-        email: email!,
-        password: pw!,
+        sessionKey: window.localStorage.sessionKey,
+        email: _email,
+        password: _pw,
       },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "*/*",
-        },
-      },
+      DEFAULT_POST_HEADERS,
       (response) => {
         console.assert(response.status == 200);
-        console.log(response.data);
-        localStorage.setItem("user_email", email!);
-        localStorage.setItem(
-          "user_id",
-          (response.data as { uid: number }).uid.toLocaleString(),
-        );
+        window.localStorage.setItem("user", `${response.data.user}`);
+        window.localStorage.setItem("email", _email);
         Navigate("/1", { replace: true });
       },
       (reason) => console.warn(reason),

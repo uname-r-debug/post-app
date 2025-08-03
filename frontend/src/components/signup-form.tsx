@@ -1,19 +1,18 @@
 import { Label } from "@radix-ui/react-label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useNavigate, type NavigateFunction } from "react-router";
-import { post } from "@/lib/utils";
+import { DEFAULT_POST_HEADERS, formInputs, post } from "@/lib/utils";
 import React from "react";
 import { CheckCircle } from "lucide-react";
-
-export default function SignupForm() {
+import FlexLayout from "./layout/flex";
+import GridLayout from "./layout/grid";
+type FormData = {
+  name: string;
+  email: string;
+  password: string;
+};
+export default function SignupForm(): React.JSX.Element {
   const Navigate: NavigateFunction = useNavigate();
   const [created, setCreated] = React.useState<boolean>(false);
   const [statusBar, setStatusBar] = React.useState<React.JSX.Element>(<></>);
@@ -21,99 +20,78 @@ export default function SignupForm() {
   React.useEffect(() => {
     if (created)
       setStatusBar(
-        <div className="flex justify-end pt-10">
-          <CheckCircle className="text-primary animate-bounce mr-10 size-10" />
-        </div>,
+        <FlexLayout className="justify-end items-center">
+          <CheckCircle className="size-10 text-primary animate-bounce" />
+        </FlexLayout>,
       );
   }, [created]);
 
-  const handleSignup = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignup = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    const inputs = () =>
-      ["name", "email", "password"].map((id) =>
-        document.querySelector<HTMLInputElement>("#" + id)?.value.trim(),
+    const inputs = (): Array<string> => formInputs(["name", "email", "password"])
+      .map(
+        value => value.trim()
       );
     const [_name, _email, _password] = inputs();
 
-    post(
+    post<FormData, { sessionKey: string }>(
       "http://localhost:8000/api/create",
       {
-        name: _name!,
-        email: _email!,
-        password: _password!,
+        name: _name,
+        email: _email,
+        password: _password,
       },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "*/*",
-        },
-      },
+      DEFAULT_POST_HEADERS,
       (response) => {
         console.assert(response.status == 200);
+        window.localStorage.clear();
+        window.localStorage.setItem("sessionKey", response.data.sessionKey);
+        window.localStorage.setItem("name", _name);
         setCreated(true);
       },
       (reason) => console.warn(reason),
     );
   };
 
+  const FormMarkup = (): React.JSX.Element => (
+    <form onSubmit={handleSignup}>
+      <Label htmlFor="name">Name</Label>
+      <Input type="text" id="name" placeholder="John Doe" required />
+      <Label htmlFor="email">Email</Label>
+      <Input type="email" id="email" placeholder="m@example.com" required />
+      <Label htmlFor="password">Password</Label>
+      <Input type="password" id="password" placeholder="***" required />
+      <Button type="submit" className="w-full mt-10 cursor-pointer">
+        Submit
+      </Button>
+    </form>
+  );
+
   return (
-    <>
-      {statusBar}
-      <div className="flex items-center min-h-[inherit]">
-        <Card className="w-128 mx-auto">
-          <CardHeader>
-            <CardTitle>Sign up</CardTitle>
-            <CardDescription>Sign up for an account.</CardDescription>
-          </CardHeader>
-
-          <CardContent>
-            <form className="flex flex-col gap-6" onSubmit={handleSignup}>
-              <div className="grid gap-3">
-                <Label htmlFor="name">Name</Label>
-                <Input id="name" type="text" placeholder="..." required />
-              </div>
-
-              <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                />
-              </div>
-
-              <div className="grid gap-3">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  placeholder="..."
-                  type="password"
-                  required
-                />
-              </div>
-
-              <div className="grid gap-3">
-                <Button
-                  type="submit"
-                  className="cursor-pointer hover:bg-foreground hover:text-primary"
-                >
-                  Sign up
-                </Button>
-                <Button
-                  className="cursor-pointer hover:bg-foreground hover:text-primary"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    Navigate("/", { replace: true });
-                  }}
-                >
-                  Log in
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    </>
+    <FlexLayout className="min-h-[inherit] font-[Geologica]">
+      {/** */}
+      <FlexLayout className="grow justify-center items-center">
+        <FlexLayout id="wrapper" className="flex-col grow-[0.2]">
+          {statusBar}
+          <GridLayout className="grid-rows-1">
+            <FlexLayout className="flex-col gap-2 p-4 bg-border rounded-xl">
+              <div>Sign up for an account.</div>
+              <div>Its Free!</div>
+              {FormMarkup()}
+              <Button
+                type="button"
+                className="w-full cursor-pointer"
+                onClick={(e) => {
+                  e.preventDefault();
+                  Navigate("/", { replace: true });
+                }}
+              >
+                Login
+              </Button>
+            </FlexLayout>
+          </GridLayout>
+        </FlexLayout>
+      </FlexLayout>
+    </FlexLayout>
   );
 }
