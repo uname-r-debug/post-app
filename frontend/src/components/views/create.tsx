@@ -4,7 +4,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { DEFAULT_POST_HEADERS, formInputs, post } from "@/lib/utils";
 const gridClasses: string = "grid-cols-[auto] gap-2";
-type PostData = {
+interface PostData {
     subject: string,
     content: string,
     user: number

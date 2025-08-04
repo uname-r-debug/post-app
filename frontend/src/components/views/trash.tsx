@@ -3,7 +3,7 @@ import { DEFAULT_POST_HEADERS, post } from "../../lib/utils";
 import { useNavigate, type NavigateFunction } from "react-router";
 import FlexLayout from "../layout/flex";
 import GridLayout from "../layout/grid";
-type PostData = {
+interface PostData {
   user: number,
   sessionKey: string
 };

@@ -3,7 +3,7 @@ import FlexLayout from "../layout/flex";
 import GridLayout from "../layout/grid";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-type PostData = {
+interface PostData {
     subject: string
 };
 export default function DeleteView(): React.JSX.Element {
